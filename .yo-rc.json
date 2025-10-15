@@ -1,0 +1,18 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": false,
+    "nodeVersion": "22.16.0",
+    "sdksVersions": {},
+    "version": "1.21.1",
+    "libraryName": "keshnet-intranet",
+    "libraryId": "28891247-bda1-4b74-bcbf-28eea8b39e23",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "keshnet-intranet",
+    "solutionShortDescription": "keshnet-intranet description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

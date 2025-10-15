@@ -1,0 +1,137 @@
+@import '~@fluentui/react/dist/sass/References.scss';
+
+.quickLinks_wrap {
+  max-width: 100%;
+  // margin-top: 35px;
+}
+
+.quicklinks_content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  // width: 98%; // previous 96
+  // justify-content: flex-end;
+}
+.quicklinks_MainDivHeightWidth{
+  width: 435.87px;
+  height: 380px;
+}
+
+.quickLinks_actions {
+  display: grid;
+  grid-template-columns: repeat(2, 0fr);
+  gap: 8px;
+}
+
+.quickLinks_action {
+  background: #053954;
+  color: #fff;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  height: 158px;
+  width: 214px;
+}
+
+.quickLinks_action:hover{
+  background: #105579;
+}
+
+.quickLinks_icon {
+  // width: 54px;
+  // height: 54px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+}
+
+.quickLinks_label {
+  font-weight: 600;
+  font-family: 'Keshet-12';
+  font-size: 22px;
+  text-align: center;
+  // width: 143px;
+  // height: 45px;
+   width: 182.41px;
+  height: 30px;
+}
+
+.quickLinks_action.icon-a .quickLinks_icon svg {
+  stroke: #09C9D6;
+}
+
+.quickLinks_action.icon-b .quickLinks_icon svg {
+  stroke: #8B6CF6;
+}
+
+.quickLinks_action.icon-c .quickLinks_icon svg {
+  stroke: #FF7B4D;
+}
+
+.quickLinks_action.icon-d .quickLinks_icon svg {
+  stroke: #9AE04A;
+}
+
+.QuickLinksWebPart_greeting {
+  font-size: 40px;
+  font-weight: normal;
+  color: var(--accent);
+  font-family: "Alef", sans-serif;
+  // margin-bottom: 12px;
+  margin-bottom: 15px;
+  text-align: right;
+  display: flex;
+  gap: 10px;
+  height: 40px;
+  
+}
+
+.QuickLinksWebPart_bold-part {
+  font-weight: 800;
+  font-family: 'keshet-12';
+}
+:global{
+  div[data-automation-id="CanvasZone-SectionContainer"]{
+    max-width:960px!important;
+}
+}
+
+// media query 
+@media screen and (max-width: 1728px) and (max-height: 1432px) {
+  .quicklinks_MainDivHeightWidth {
+    width: 435.87px;
+    height: 380px;
+  }
+  .QuickLinksWebPart_greeting {
+    height: 40px;
+     width: auto !important;
+  }
+}
+
+@media screen and (max-width: 1024px) and (max-height: 1513px) {
+  .QuickLinksWebPart_greeting {
+    height: 40px;
+    width: 184px !important;
+  }
+}
+@media screen and (max-width: 1240px) and (max-height: 1513.4px) {
+  .QuickLinksWebPart_greeting {
+    height: 40px;
+    width: 184px !important;
+  }
+}
+@media screen and (max-width: 1920px) and (max-height: 1454px) {
+  .QuickLinksWebPart_greeting {
+    height: 40px;
+    width: 184px !important;
+  }
+}
+

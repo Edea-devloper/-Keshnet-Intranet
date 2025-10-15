@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "keshnet-intranet-client-side-solution",
+    "id": "28891247-bda1-4b74-bcbf-28eea8b39e23",
+    "version": "1.0.0.46",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.21.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "keshnet-intranet description"
+      },
+      "longDescription": {
+        "default": "keshnet-intranet description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "keshnet-intranet Feature",
+        "description": "The feature that activates elements of the keshnet-intranet solution.",
+        "id": "c1b285e9-dfa6-43cd-852f-2c41e9fd2578",
+        "version": "1.0.0.46"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/keshnet-intranet.sppkg"
+  }
+}

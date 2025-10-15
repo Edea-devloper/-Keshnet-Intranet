@@ -1,0 +1,46 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "keshnet-phonebook-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/keshnetPhonebook/KeshnetPhonebookWebPart.js",
+          "manifest": "./src/webparts/keshnetPhonebook/KeshnetPhonebookWebPart.manifest.json"
+        }
+      ]
+    },
+    "keshnet-gallery-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/keshnetGallery/KeshnetGalleryWebPart.js",
+          "manifest": "./src/webparts/keshnetGallery/KeshnetGalleryWebPart.manifest.json"
+        }
+      ]
+    },
+    "keshnet-quicklinks-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/keshnetQuicklinks/KeshnetQuicklinksWebPart.js",
+          "manifest": "./src/webparts/keshnetQuicklinks/KeshnetQuicklinksWebPart.manifest.json"
+        }
+      ]
+    },
+    "keshnet-birthday-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/keshnetBirthday/KeshnetBirthdayWebPart.js",
+          "manifest": "./src/webparts/keshnetBirthday/KeshnetBirthdayWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "KeshnetPhonebookWebPartStrings": "lib/webparts/keshnetPhonebook/loc/{locale}.js",
+    "PropertyControlStrings": "node_modules/@pnp/spfx-property-controls/lib/loc/{locale}.js",
+    "KeshnetGalleryWebPartStrings": "lib/webparts/keshnetGallery/loc/{locale}.js",
+    "KeshnetQuicklinksWebPartStrings": "lib/webparts/keshnetQuicklinks/loc/{locale}.js",
+    "KeshnetBirthdayWebPartStrings": "lib/webparts/keshnetBirthday/loc/{locale}.js"
+  }
+}
