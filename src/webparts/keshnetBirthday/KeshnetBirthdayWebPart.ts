@@ -16,7 +16,6 @@ import * as strings from 'KeshnetBirthdayWebPartStrings';
 import Birthday from './components/KeshnetBirthday';
 import { IKeshnetBirthdayProps } from './components/IKeshnetBirthdayProps';
 import { getSP } from './Utility/getSP';
-import { getListItemsFormainList } from './Utility/utils';
 import { IColumnReturnProperty, PropertyFieldColumnPicker, PropertyFieldColumnPickerOrderBy } from '@pnp/spfx-property-controls/lib/PropertyFieldColumnPicker';
 
 export interface IBirthdayWebPartProps {
@@ -33,8 +32,7 @@ export default class BirthdayWebPart extends BaseClientSideWebPart<IBirthdayWebP
 
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
-  private _listData: any[] = []; // store fetched list data
-
+  // private _listData: any[] = []; 
   public render(): void {
     const element: React.ReactElement<IKeshnetBirthdayProps> = React.createElement(
       Birthday,
@@ -46,7 +44,7 @@ export default class BirthdayWebPart extends BaseClientSideWebPart<IBirthdayWebP
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
         selectedList: this.properties.selectedList,
-        listData: this._listData,
+        // listData: this._listData,
         fullname: this.properties.fullname,
         department: this.properties.department,
         company: this.properties.company,
@@ -62,14 +60,13 @@ export default class BirthdayWebPart extends BaseClientSideWebPart<IBirthdayWebP
     this._environmentMessage = await this._getEnvironmentMessage();
     getSP(this.context);
 
-    if (this.properties.selectedList) {
-      try {
-        this._listData = await getListItemsFormainList({ title: this.properties.selectedList });
-        console.log("Fetched list data:", this._listData);
-      } catch (error) {
-        console.error("Error fetching list data:", error);
-      }
-    }
+    // if (this.properties.selectedList) {
+    //   try {
+    //     this._listData = await getListItemsFormainList({ title: this.properties.selectedList });
+    //   } catch (error) {
+    //     console.error("Error fetching list data:", error);
+    //   }
+    // }
 
     return;
   }

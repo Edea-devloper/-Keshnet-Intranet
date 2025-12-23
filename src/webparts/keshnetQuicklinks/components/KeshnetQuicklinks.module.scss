@@ -10,8 +10,6 @@
   align-items: center;
   gap: 20px;
   width: 100%;
-  // width: 98%; // previous 96
-  // justify-content: flex-end;
 }
 .quicklinks_MainDivHeightWidth{
   width: 435.87px;
@@ -43,8 +41,6 @@
 }
 
 .quickLinks_icon {
-  // width: 54px;
-  // height: 54px;
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -58,8 +54,6 @@
   font-family: 'Keshet-12';
   font-size: 22px;
   text-align: center;
-  // width: 143px;
-  // height: 45px;
    width: 182.41px;
   height: 30px;
 }
@@ -84,14 +78,13 @@
   font-size: 40px;
   font-weight: normal;
   color: var(--accent);
-  font-family: "Alef", sans-serif;
+  font-family: "keshet-12" !important;
   // margin-bottom: 12px;
   margin-bottom: 15px;
   text-align: right;
   display: flex;
   gap: 10px;
   height: 40px;
-  
 }
 
 .QuickLinksWebPart_bold-part {

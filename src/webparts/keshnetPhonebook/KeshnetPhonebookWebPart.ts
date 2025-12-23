@@ -30,15 +30,23 @@ import "@pnp/sp/fields";
 
 export interface ITabConfig {
   tabTitle: string;
-  selectedColumns: string[];
-  selectedColumnsCard: string[];
+  selectedColumnsFirstTab: string[];
+  selectedColumnsSecondTab: string[];
+  selectedColumnsThirdTab: string[];
+  selectedColumnsCardFirstTab: string[];
+  selectedColumnsCardSecondTab: string[];
+  selectedColumnsCardThirdTab: string[];
 }
 
 export interface IKeshnetPhonebookWebPartProps {
   description: string;
   PhoneBookList: string;
-  selectedColumns: string[];
-  selectedColumnsCard: string[];
+  selectedColumnsFirst: string[];
+  selectedColumnsSecond: string[];
+  selectedColumnsThird: string[];
+  selectedColumnsCardFirstTab: string[];
+  selectedColumnsCardSecondTab: string[];
+  selectedColumnsCardThirdTab: string[];
   selectordercolumn: string;
   context: any;
   maxRows?: number;
@@ -52,7 +60,7 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
   private _isDarkTheme: boolean = false;
   private _environmentMessage: string = '';
   private _listColumns: { key: string; text: string }[] = [];
-  private _sp: SPFI; // ✅ Added SPFI instance
+  private _sp: SPFI; // Added SPFI instance
 
   public render(): void {
     const element: React.ReactElement<IKeshnetPhonebookProps> = React.createElement(
@@ -60,12 +68,17 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
       {
         description: this.properties.description,
         isDarkTheme: this._isDarkTheme,
+        themeFont: getComputedStyle(this.domElement).getPropertyValue('--themeFontFamily'),
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
         userDisplayName: this.context.pageContext.user.displayName,
         PhoneBookList: this.properties.PhoneBookList,
-        selectedColumns: this.properties.selectedColumns,
-        selectedColumnsCard: this.properties.selectedColumnsCard,
+        selectedColumnsFirst: this.properties.selectedColumnsFirst,
+        selectedColumnsSecond: this.properties.selectedColumnsSecond,
+        selectedColumnsThird: this.properties.selectedColumnsThird,
+        selectedColumnsCardFirstTab: this.properties.selectedColumnsCardFirstTab,
+        selectedColumnsCardSecondTab: this.properties.selectedColumnsCardSecondTab,
+        selectedColumnsCardThirdTab: this.properties.selectedColumnsCardThirdTab,
         maxRows: this.properties.maxRows || 10,
         context: this.context,
         tabConfigs: this.properties.tabConfigs,
@@ -84,7 +97,7 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
     // Initialize PnP 
     this._sp = spfi().using(SPFx(this.context));
 
-    // ✅ Preload columns if a list is already selected
+    // Preload columns if a list is already selected
     if (this.properties.PhoneBookList) {
       await this._loadColumns(this.properties.PhoneBookList);
     }
@@ -128,17 +141,23 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
     }
 
     this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
+
+    const { semanticColors, fonts } = currentTheme;
 
     if (semanticColors) {
-      this.domElement.style.setProperty('--bodyText', semanticColors.bodyText || null);
-      this.domElement.style.setProperty('--link', semanticColors.link || null);
-      this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || null);
+      this.domElement.style.setProperty('--bodyText', semanticColors.bodyText || '');
+      this.domElement.style.setProperty('--link', semanticColors.link || '');
+      this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || '');
     }
 
+    if (fonts) {
+      this.domElement.style.setProperty(
+        '--themeFontFamily',
+        fonts?.medium?.fontFamily || 'Segoe UI'
+      );
+    }
   }
+
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
@@ -153,8 +172,12 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
 
     if (propertyPath === "PhoneBookList" && newValue) {
       // Reset selected columns when list changes
-      this.properties.selectedColumns = [];
-      this.properties.selectedColumnsCard = [];
+      this.properties.selectedColumnsFirst = [];
+      this.properties.selectedColumnsSecond = [];
+      this.properties.selectedColumnsThird = [];
+      this.properties.selectedColumnsCardFirstTab = [];
+      this.properties.selectedColumnsCardSecondTab = [];
+      this.properties.selectedColumnsCardThirdTab = [];
 
       await this._loadColumns(newValue);
 
@@ -167,16 +190,14 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
   }
 
 
-  // Updated to use this._sp instead of old sp
-  // Updated to include Calculated columns (FieldTypeKind 17)
   private async _loadColumns(listId: string): Promise<void> {
     const fields = await this._sp.web.lists.getById(listId).fields
-      .select("InternalName,Title,Hidden,ReadOnlyField,FieldTypeKind") // include FieldTypeKind
-      .filter("Hidden eq false")(); // only exclude hidden
+      .select("InternalName,Title,Hidden,ReadOnlyField,FieldTypeKind") 
+      .filter("Hidden eq false")(); 
 
     this._listColumns = fields
       .filter((f: any) => {
-        // Allow all non-readonly OR explicitly allow calculated (FieldTypeKind 17)
+        // Allow all non-readonly OR explicitly allow calculated 
         return !f.ReadOnlyField || f.FieldTypeKind === 17;
       })
       .map((f: { InternalName: string; Title: string }) => ({
@@ -212,19 +233,51 @@ export default class KeshnetPhonebookWebPart extends BaseClientSideWebPart<IKesh
                   deferredValidationTime: 0,
                   key: "PhoneBookListPicker",
                 }),
-                PropertyFieldMultiSelect("selectedColumns", {
+                PropertyFieldMultiSelect("selectedColumnsFirst", {
                   key: "multiSelectColumns",
-                  label: "Select Columns",
+                  label: "Select Columns For First Tab",
                   options: this._listColumns,
-                  selectedKeys: this.properties.selectedColumns || [],
+                  selectedKeys: this.properties.selectedColumnsFirst || [],
                   disabled: this._listColumns.length === 0,
                   //properties: this.properties
                 }),
-                PropertyFieldMultiSelect("selectedColumnsCard", {
+                PropertyFieldMultiSelect("selectedColumnsSecond", {
                   key: "multiSelectColumns",
-                  label: "Select Columns for Card",
+                  label: "Select Columns For Second Tab",
                   options: this._listColumns,
-                  selectedKeys: this.properties.selectedColumnsCard || [],
+                  selectedKeys: this.properties.selectedColumnsSecond || [],
+                  disabled: this._listColumns.length === 0,
+                  //properties: this.properties
+                }),
+                PropertyFieldMultiSelect("selectedColumnsThird", {
+                  key: "multiSelectColumns",
+                  label: "Select Columns For Third Tab",
+                  options: this._listColumns,
+                  selectedKeys: this.properties.selectedColumnsThird || [],
+                  disabled: this._listColumns.length === 0,
+                  //properties: this.properties
+                }),
+                PropertyFieldMultiSelect("selectedColumnsCardFirstTab", {
+                  key: "multiSelectColumns",
+                  label: "Select Columns for first tab Card",
+                  options: this._listColumns,
+                  selectedKeys: this.properties.selectedColumnsCardFirstTab || [],
+                  disabled: this._listColumns.length === 0,
+                  //properties: this.properties
+                }),
+                PropertyFieldMultiSelect("selectedColumnsCardSecondTab", {
+                  key: "multiSelectColumns",
+                  label: "Select Columns for second tab Card",
+                  options: this._listColumns,
+                  selectedKeys: this.properties.selectedColumnsCardSecondTab || [],
+                  disabled: this._listColumns.length === 0,
+                  //properties: this.properties
+                }),
+                PropertyFieldMultiSelect("selectedColumnsCardThirdTab", {
+                  key: "multiSelectColumns",
+                  label: "Select Columns for third tab Card",
+                  options: this._listColumns,
+                  selectedKeys: this.properties.selectedColumnsCardThirdTab || [],
                   disabled: this._listColumns.length === 0,
                   //properties: this.properties
                 }),

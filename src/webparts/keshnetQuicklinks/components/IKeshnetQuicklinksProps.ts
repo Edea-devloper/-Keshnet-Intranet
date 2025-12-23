@@ -10,4 +10,5 @@ export interface IKeshnetQuicklinksProps {
   PhoneBookListForQuickLink: string;
   _ListDataEMPFirstName: any;
   AssetFolderPath: string;
+  context: any;
 }

@@ -33,17 +33,3 @@
   }
 }
 
-@font-face {
-  font-family: 'Keshet-12-Regular';
-  src: url(require('../assets/Keshet-12-Regular.otf')) format('opentype'); // fallback
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Apply to all text on the page */
-:global(body),
-:global(*) {
-  font-family: 'Keshet-12-Regular', Arial, sans-serif !important;
-  color: red !important;
-}

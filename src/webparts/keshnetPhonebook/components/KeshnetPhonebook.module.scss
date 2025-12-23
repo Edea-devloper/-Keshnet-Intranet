@@ -39,6 +39,7 @@
       border-top-right-radius: 8px;
       text-align: center;
       max-height: 40px;
+      font-family: var(--fontFamilyCustomFont100, var(--fontFamilyBase)) !important;
       // font-family: 'Open Sans',sans-serif;
 
       &.active {
@@ -65,11 +66,6 @@
     .searchContainer {
       display: flex;
       justify-content: center;
-      //padding: 1rem;
-      // padding-left: 60px;
-      // padding-right: 60px;
-      // padding-top: 32px;
-      // padding-bottom: 16px;
       width: 960px;
       height: 90px;
       background-color: #053853; // Dark blue background
@@ -134,8 +130,6 @@
     background-color: white;
     border-radius: 0 0 8px 8px;
     max-width: 100%;
-    // overflow-x: auto;
-    // height: 772px;
   }
 
   .employeeTable {
@@ -145,24 +139,18 @@
    border-collapse: collapse;
     font-size: 13px;
     
-
-    /* Bold 2nd and 7th column (header + cells) */
    
     tbody tr td:nth-child(2),
     tbody tr td:nth-child(7) {
       font-weight: bold !important;
     }
 
-    /* Column 2 body cells → 70% black */
     tbody tr td:nth-child(2) {
       color: #000000;
-      /* semi-transparent black */
     }
 
-    /* Column 7 body cells → solid black */
     tbody tr td:nth-child(7) {
       color: #000000b2;
-      /* pure black */
     }
    
 
@@ -179,9 +167,6 @@
         font-size: 16px;
         height: 32px;
         font-weight: 600 !important;
-        // &.TableheaderBold {
-        //   font-size: 18px;
-        // }
       }
     }
 
@@ -206,9 +191,6 @@
           font-family: "Keshet-12";
           font-size: 16px;
           color: #333;
-          // white-space: nowrap;
-
-          /* 🔑 Enable wrapping */
           white-space: normal;
           word-wrap: break-word;
           word-break: break-word;
@@ -228,8 +210,6 @@
         }
 
         &.photoCell {
-          // padding: 1px;
-          // width: 54px;
           background-color: #ebebeb;
         }
 
@@ -304,26 +284,19 @@
 
     &:disabled {
       opacity: 1;
-      /* same opacity */
       cursor: pointer;
-      /* keep pointer */
       background-color: #1e4a61;
-      /* same bg */
       color: #ffffffb5;
-      /* same text color */
     }
   }
 
   .pageButton {
-    // padding: 8px 6px;
     border: none;
     background-color: rgba(255, 255, 255, 0.1);
     color: #ffffffb5;
     cursor: pointer;
     border-radius: 4px;
     font-size: 20px;
-    // font-weight: 600;
-    // min-width: 35px;
     font-weight: 500;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
     margin: 0 2px;
@@ -340,7 +313,6 @@
 
   .arrowButton {
     margin: 0 24px;
-    /* bigger gap on left/right of arrows */
   }
 
   .pageButton:hover:not(.disabled):not(.active) {
@@ -420,10 +392,6 @@
   height: 4px;
   position: relative;
   bottom: -46px;
-  // border-bottom-right-radius: 6px;
-  // position: absolute;
-  // top: 0;
-  // left: 0;
 }
 
 .avatarInsideFrame {
@@ -434,9 +402,6 @@
 }
 
 .avatarFrameCard {
-  //z-index: 2;
-  //width: 100%;
-  // width: 240px;
   height: 100%;
 }
 
@@ -556,54 +521,3 @@
   }
 }
 
-// // RESPONSIVE STYLES
-// @media (max-width: 1400px) {
-//   .tableContainer .employeeTable {
-//     font-size: 12px;
-
-//     th,
-//     td {
-//       padding: 10px 6px;
-//     }
-//   }
-// }
-
-// @media (max-width: 768px) {
-//   .tabs .tab {
-//     padding: 12px 20px;
-//     font-size: 14px;
-//   }
-
-//   .header .searchContainer {
-//     padding: 15px 20px;
-//   }
-
-//   .tableContainer .employeeTable {
-//     font-size: 11px;
-
-//     th,
-//     td {
-//       padding: 8px 4px;
-//     }
-
-//     .avatar img {
-//       width: 32px;
-//       height: 40px;
-//     }
-//   }
-
-//   .pagination {
-//     padding: 20px 15px;
-
-//     .pageButton {
-//       padding: 8px 12px;
-//       font-size: 14px;
-//       min-width: 35px;
-//     }
-
-//     .paginationInfo {
-//       font-size: 14px;
-//       margin: 0 15px;
-//     }
-//   }
-// }

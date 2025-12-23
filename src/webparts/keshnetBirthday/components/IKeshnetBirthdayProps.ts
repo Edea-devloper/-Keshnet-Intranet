@@ -6,7 +6,7 @@ export interface IKeshnetBirthdayProps {
   userDisplayName: string;
   selectedList: any;
   context: any;
-  listData: any;
+  // listData: any;
   fullname:string;
   department:string;
   company:string;

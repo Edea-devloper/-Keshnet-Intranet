@@ -22,12 +22,6 @@ export const getSPListItemsById = async (listId: string, context: any) => {
       .select("*,Id,Title,AttachmentFiles/FileName,AttachmentFiles/ServerRelativeUrl")
       .expand("AttachmentFiles")();
 
-    // // Filter out items where SPsubDepartment contains "*"
-    // const filteredResult = result.filter((item: any) => {
-    //   const val = item.SPsubDepartment || "";
-    //   return !val.includes("*");
-    // });
-
     return result;
   } catch (error) {
     console.error("Error fetching list by ID:", error);

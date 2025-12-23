@@ -8,12 +8,9 @@
   }
 
   .main {
-    // padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    // padding-left: 11px;
-    // padding-right: 22px;
     flex-direction: column;
     padding-top: 0 !important;
   }
@@ -24,9 +21,7 @@
     font-weight: 800;
     color: #064261;
     width: 100%;
-    //height: 40px;
     height: 48px;
-    // margin-bottom: 30px;
     margin-bottom: 8px;
     font-family: 'Keshet-12';
 
@@ -55,7 +50,7 @@
 
   .cardCarousel {
     overflow-x: auto;
-    overflow-y: visible; // Allow vertical scrolling to pass through
+    overflow-y: visible; 
     scroll-behavior: smooth;
     width: 100%;
     display: flex;
@@ -87,7 +82,6 @@
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    // box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
     border: 1px solid #cbc7c2;
     position: relative;
@@ -95,20 +89,15 @@
   }
 
   .iconLabel {
-    // padding: 5px 8px 0px 10px;
     background-color: #ebe7e3;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // padding: 8px 0px 12px 0px;
     height: 82px;
     width: 220px;
 
     img {
-      // width: 62px;
-      // height: 36px;
       width: 64px;
       height: 42px;
       object-fit: cover;
@@ -174,8 +163,6 @@
     overflow: hidden;
 
     .backGalleryImage {
-      // width: 100%;
-      // min-height: 325px;
       width: 220px;
       height: 312px;
       object-fit: cover;
@@ -195,9 +182,7 @@
   }
 
   .overlay {
-    // width: 100%;
     background: #064465;
-    // height: inherit;
     display: flex;
     flex-direction: column;
 
@@ -221,9 +206,6 @@
     position: absolute;
     bottom: 30px;
     color: white;
-    // left: 50%;
-    // transform: translateX(-50%);
-    // display: grid;
     z-index: 2;
     text-align: center;
 
@@ -235,7 +217,6 @@
     .number {
       font-size: 13px;
       color: #f4c92f;
-      // margin-left: 6px;
       font-weight: 600;
       width: 63px;
       height: 19px;
@@ -254,21 +235,10 @@
   .carouselButton {
     position: absolute;
     top: 53%;
-    // transform: translateY(-50%);
-    // background: #c0c9ce;
-    // border: none;
-    // border-radius: 50%;
-    // width: 52px;
-    // height: 52px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
     cursor: pointer;
-    // font-size: 30px;
     z-index: 10;
     border-radius: 50%;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
-    // color: #074565;
 
     &.left {
       left: -26px;

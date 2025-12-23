@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styles from './KeshnetBirthday.module.scss';
 import type { IKeshnetBirthdayProps } from './IKeshnetBirthdayProps';
-import { getAllImages } from '../Utility/utils';
+import { getAllImages, getListItemsFormainList } from '../Utility/utils';
 
 interface IGalleryCard {
   FileRef: any;
@@ -11,9 +11,11 @@ interface IGalleryCard {
 
 const KeshnetBirthday: React.FC<IKeshnetBirthdayProps> = (props) => {
   const [Images, setImages] = React.useState<IGalleryCard[]>([]);
-  const [currentIndex, setCurrentIndex] = React.useState(0); // rotation index
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [listData, setListData] = React.useState<any[]>([]);
+  const [isListLoaded, setIsListLoaded] = React.useState(false); // new loading flag
 
-  const { listData, ImageLibrary, Duration } = props;
+  const { selectedList, ImageLibrary, Duration } = props;
 
   const fetchData = async (): Promise<void> => {
     try {
@@ -24,24 +26,34 @@ const KeshnetBirthday: React.FC<IKeshnetBirthdayProps> = (props) => {
     }
   };
 
-  React.useEffect(() => {
-    fetchData().catch((error) => {
-      console.error("Error fetching gallery items:", error);
-    });
-  }, []);
+  const fetchListData = async () => {
+    if (!selectedList) return;
+    setIsListLoaded(false); // start loading
+    try {
+      const data = await getListItemsFormainList({ title: selectedList });
+      setListData(data || []);
+    } catch (error) {
+      console.error("Error fetching list data:", error);
+    } finally {
+      setIsListLoaded(true); // finished loading (success or fail)
+    }
+  };
 
-  //  rotate through birthdays if available
+  React.useEffect(() => {
+    fetchData();
+    fetchListData();
+  }, [selectedList, ImageLibrary]);
+
   React.useEffect(() => {
     if (!listData || listData.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % listData.length);
-    }, (Number(Duration) || 5) * 1000); // default 5s if not set
+    }, (Number(Duration) || 5) * 1000);
 
     return () => clearInterval(interval);
   }, [listData, Duration]);
 
-  //  pick current birthday item or fallback
   const currentItem =
     listData && listData.length > 0 ? listData[currentIndex] : null;
 
@@ -49,12 +61,11 @@ const KeshnetBirthday: React.FC<IKeshnetBirthdayProps> = (props) => {
     ? require('../assets/background.png')
     : require('../assets/Frame1702.png');
 
-  // get image for email match
   const matchedImage = Images.find(
     (i) =>
       i.EmployeeName &&
       i.EmployeeName?.EMail?.toLowerCase().trim() ===
-        currentItem?.Email?.toLowerCase().trim()
+      currentItem?.Email?.toLowerCase().trim()
   );
 
   const attachmentUrl =
@@ -69,12 +80,18 @@ const KeshnetBirthday: React.FC<IKeshnetBirthdayProps> = (props) => {
   return (
     <div className={styles.birthdayWebPart_wrap} dir="rtl" lang="he">
       <div className={styles.birthdayWebPart_content}>
+
+        {/* Hide title until list data is fully loaded */}
         <div className={styles.birthdayWebPart_center_title}>
-          <span className={styles.birthdayWebPart_bold_text}>היום</span>
-          <span className={styles.birthdayWebPart_accent}>יומולדת</span>
+          {isListLoaded && (
+            <>
+              <span className={styles.birthdayWebPart_bold_text}>היום</span>
+              <span className={styles.birthdayWebPart_accent}>יומולדת</span>
+            </>
+          )}
         </div>
 
-        {/* Birthday block */}
+
         <div className={styles.birthdayWebPart_birthday_block}>
           <div className={styles.birthdayWebPart_right_column}>
             <div className={styles.birthdayWebPart_photo_wrap}>

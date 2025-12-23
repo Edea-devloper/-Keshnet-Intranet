@@ -16,11 +16,6 @@ import {
   PropertyFieldListPickerOrderBy,
 } from "@pnp/spfx-property-controls/lib/PropertyFieldListPicker";
 import { getSP } from "./Utility/getSP";
-import {
-  getLatestQuickLink,
-  getCurrentUser,
-  getSPListItemsById,
-} from "./Utility/utils";
 
 export interface IQuickLinksWebPartProps {
   selectedList: string | string[];
@@ -50,48 +45,15 @@ export default class QuickLinksWebPart extends BaseClientSideWebPart<IQuickLinks
         PhoneBookListForQuickLink: this.properties.PhoneBookListForQuickLink,
         _ListDataEMPFirstName: this._ListDataEMPFirstName,
         AssetFolderPath: this.properties.AssetFolderPath,
+        context: this.context
       });
 
     ReactDom.render(element, this.domElement);
   }
 
-  protected async onInit(): Promise<void> {
+   protected async onInit(): Promise<void> {
     this._environmentMessage = await this._getEnvironmentMessage();
-    getSP(this.context);
-
-    // Fetch current user
-
-    if (this.properties.selectedList) {
-      try {
-        this._listData = await getLatestQuickLink({
-          title: this.properties.selectedList,
-        });
-        console.log("QuickLinks list data fetched:", this._listData);
-      } catch (error) {
-        console.error("Error fetching list data:", error);
-      }
-    }
-
-    try {
-      this._currentUser = await getCurrentUser();
-    } catch (error) {
-      console.error("❌ Error fetching current user:", error);
-    }
-
-    if (this.properties.PhoneBookListForQuickLink) {
-      try {
-        this._ListDataEMPFirstName = await getSPListItemsById(
-          this.properties.PhoneBookListForQuickLink,
-          this.context
-        );
-        console.log("PhoneBook list data fetched:", this._ListDataEMPFirstName);
-      } catch (error) {
-        console.error("Error fetching list data:", error);
-      }
-    }
-      console.log(" Rendering component...");
-    // this.render();
-    // console.log(" Re-Rendering component...");
+    getSP(this.context); // initialize PnP JS
     return;
   }
 

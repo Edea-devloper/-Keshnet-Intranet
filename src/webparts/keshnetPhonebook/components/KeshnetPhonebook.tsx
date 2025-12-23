@@ -3,14 +3,12 @@ import { useState } from 'react';
 import styles from './KeshnetPhonebook.module.scss';
 import { IKeshnetPhonebookProps } from './IKeshnetPhonebookProps';
 import { getSPListItemsById } from '../Utility/utils';
-// import {userImg} from '../assets/user.png'; // Default user image
 import userImg from '../assets/user.svg';
 import layerImg from '../assets/Layer_1.png';
 import Less from '../assets/Less.png';
 import Greater from '../assets/Greater.png';
 import { getAllImages } from '../Utility/utils';
-// Layer image for modal
-//const userImg = require('../assets/user.png'); // Default user image
+
 
 interface Employee {
   id: number;
@@ -53,7 +51,6 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [phoneBookData, setPhoneBookData] = useState<any[]>([]);
   const [Images, SetImages] = useState<SPImage[]>([]);
-  console.log(Images);
 
   React.useEffect(() => {
     const style = `
@@ -110,11 +107,11 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
           font-style: normal;
           font-display: swap;
         }
-  
-        /* Apply globally */
-        body, p, div, span, a, h1, h2, h3 {
-          font-family: 'Keshet-12' !important;
-        }
+
+              /* Apply globally */
+      body, p, div, span, a, h1, h2, h3 {
+        font-family: 'Keshet-12' !important;
+      }
       `;
 
     // Create and inject <style>
@@ -124,6 +121,13 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
     document.head.appendChild(styleElement);
 
   }, []);
+
+  React.useEffect(() => {
+    if (!props.themeFont) return;
+
+    const root = document.documentElement;
+    root.style.setProperty('--themeFontFamily', props.themeFont || 'Segoe UI');
+  }, [props.themeFont]);
 
   // Reset page when tab, search, or rows per page change
   React.useEffect(() => {
@@ -135,35 +139,70 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
     setSearchTerm('');
   }, [activeTab]);
 
+  const isValidDateValue = (value: any): boolean => {
+    if (value instanceof Date) return true;
+    if (typeof value !== "string") return false;
+
+    const str = value.trim();
+
+    // Supported formats:
+    const simplePattern = /^\d{4}-\d{2}-\d{2}$/; // 2025-08-03
+    const commonPattern = /^\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}$/; // 03/08/2025
+    const isoPattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?$/; // 2025-08-03T07:00:00Z
+
+    if (!simplePattern.test(str) && !commonPattern.test(str) && !isoPattern.test(str)) {
+      return false;
+    }
+
+    const parsed = Date.parse(value);
+    return !isNaN(parsed);
+  };
 
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('he-IL', {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric'
-    });
+  const formatDate = (dateValue?: string | Date): string => {
+    if (!dateValue) return '';
+    const date = new Date(dateValue);
+    if (isNaN(date.getTime())) return ''; // invalid date safety
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   const dynamicColumns: Column[] = React.useMemo(() => {
-    return (props.selectedColumns || []).map((colKey) => {
+    let selectedCols: string[] = [];
+
+    // Choose columns based on active tab
+    if (activeTab === "עובדי קשת") {
+      selectedCols = [...(props.selectedColumnsFirst || [])];
+    } else if (activeTab === "עובדי הפקות") {
+      selectedCols = [...(props.selectedColumnsSecond || [])];
+    } else if (activeTab === "KI") {
+      selectedCols = [...(props.selectedColumnsThird || [])];
+    }
+
+    return selectedCols.map((colKey) => {
       const columnInfo = props.listColumns?.find(c => c.key === colKey);
       return {
         key: colKey,
-        label: columnInfo ? columnInfo.text : colKey, // ✅ show display name if available
-        style: colKey === 'spFullName' || colKey === 'SPMobilePhone'
-          ? { fontWeight: 'bold' }
-          : colKey === 'JobTitle'
-            ? { width: '200px', fontWeight: 'normal' }
-            : colKey === 'Department'
-              ? { width: '120px', fontWeight: 'normal' }
-              : { fontWeight: 'normal' },
+        label: columnInfo ? columnInfo.text : colKey,
+        style:
+          colKey === "spFullName" || colKey === "SPMobilePhone"
+            ? { fontWeight: "bold" }
+            : colKey === "JobTitle"
+              ? { width: "200px", fontWeight: "normal" }
+              : colKey === "Department"
+                ? { width: "120px", fontWeight: "normal" }
+                : { fontWeight: "normal" },
       };
     });
-  }, [props.selectedColumns, props.listColumns]);
-
+  }, [
+    activeTab,
+    props.selectedColumnsFirst,
+    props.selectedColumnsSecond,
+    props.selectedColumnsThird,
+    props.listColumns
+  ]);
 
 
 
@@ -179,7 +218,7 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
         SetImages(images);
 
         const items = await getSPListItemsById(props.PhoneBookList, props.context);
-        // format Birthdate before saving to state
+
         // format Birthdate before saving to state
         let formattedItems = items.map((item: any) => ({
           ...item,
@@ -204,14 +243,6 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
     void fetchPhoneBookData();
   }, [props.PhoneBookList, props.context]);
 
-
-  const normalizeText = (text: string): string => {
-    return text
-      .normalize("NFKC")                 // normalize Unicode
-      .replace(/[\u0591-\u05C7]/g, "")   // remove Hebrew nikud
-      .replace(/\s+/g, "")               // remove ALL spaces
-      .toLowerCase();
-  };
 
   const normalizeForSort = (text: any): string => {
     if (!text) return '';
@@ -251,7 +282,6 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
             "קשת אינטרנשיונל",
             "Keshet International"
           ].includes(employee.spCompanyName)
-          // employee.SpCompanyName === "קשת אינטרנשיונל"
         );
       }
 
@@ -259,14 +289,44 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
     })
     .filter(employee => {
       if (!searchTerm.trim()) return true; // no filter if empty
+
+      // --- Improved normalizeText handles both RTL/LTR safely ---
+      const normalizeText = (text: string): string => {
+        if (!text) return '';
+        return text
+          .toString()
+          .normalize("NFD") // split combined unicode (accents)
+          .replace(/[\u0300-\u036f]/g, "") // remove accents
+          .replace(/[\u200E\u200F]/g, "") // remove RTL/LTR invisible marks
+          .replace(/[’‘']/g, "'") // normalize quotes
+          .replace(/[״”“]/g, '"') // normalize double quotes
+          .replace(/\s+/g, " ") // collapse multiple spaces
+          .trim()
+          .toLowerCase();
+      };
+
+      // Normalize the search term itself
       const search = normalizeText(searchTerm);
 
-      return (props.selectedColumns || []).some(colKey => {
+      // Determine which set of columns to search based on active tab
+      const activeColumns =
+        activeTab === "עובדי קשת"
+          ? props.selectedColumnsFirst || []
+          : activeTab === "עובדי הפקות"
+            ? props.selectedColumnsSecond || []
+            : activeTab === "KI"
+              ? props.selectedColumnsThird || []
+              : [];
+
+      // Match search text against the active tab's selected columns
+      return activeColumns.some(colKey => {
         const val = employee[colKey];
-        return (
-          typeof val === "string" &&
-          normalizeText(val).includes(search)
-        );
+        if (typeof val !== "string") return false;
+
+        // Normalize the value for consistent comparison
+        const normalizedValue = normalizeText(val);
+
+        return normalizedValue.includes(search);
       });
     });
 
@@ -357,11 +417,6 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
   };
 
 
-  const getManagerName = (value: any) => {
-    const manager = phoneBookData.filter((a: any) => { return a?.Email?.toLowerCase().trim() == value?.toLowerCase().trim() })[0]
-    return manager?.spFullName;
-  }
-
   return (
     <div className={styles.keshetNetContainer}>
       <div className={styles.keshetNet}>
@@ -404,14 +459,22 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
             <thead>
               <tr>
                 <th></th> {/* Avatar column */}
-                {dynamicColumns.map((col) => (
-                  <th
-                    key={col.key}
-                    style={col.style}
-                  >
-                    {col.label}
-                  </th>
-                ))}
+                {dynamicColumns.map((col) => {
+                  let label = col.label;
+
+                  // Change labels only when activeTab === "עובדי הפקות"
+                  if (activeTab === "עובדי הפקות") {
+                    if (col.key === "spCompanyName") label = "יחידה"; // Unit
+                    if (col.key === "SPmanager") label = "הפקות הבית"; // Department
+                    if (col.key === "SPsubDepartment") label = "תת מחלקה"; // Sub-department
+                  }
+
+                  return (
+                    <th key={col.key} style={col.style}>
+                      {label}
+                    </th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>
@@ -422,8 +485,8 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
                     onClick={() => handleRowClick(employee)}
                     className={styles.clickableRow}
                   >
-                    <td style={{ width: '50px', border: 'none' }} /*className={styles.photoCell}*/>
-                      {/* <div className={styles.avatar}> */}
+                    <td style={{ width: '50px', border: 'none' }} >
+                
                       <img
                         style={{ height: '60px', width: '54px', marginBottom: '-6px', marginTop: '-1px', marginLeft: '-1px', marginRight: '-1px', objectFit: 'fill' }}
                         src={getImageUrl(employee) || userImg}
@@ -432,7 +495,7 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
                           (e.currentTarget as HTMLImageElement).src = userImg;
                         }}
                       />
-                      {/* </div> */}
+                
                     </td>
                     {dynamicColumns.map((col) => {
                       const value = employee[col.key];
@@ -448,14 +511,15 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
                             <a href={`mailto:${value}`}>{value}</a>
                           ) : col.key === "SPMobilePhone" && value ? (
                             <a href={`tel:${value}`}>{value}</a>
-                          ) : col.key === "spBirthday" && value ? (
-                            value
                           ) : typeof value === "boolean" ? (
                             value ? "כן" : "לא"
+                          ) : isValidDateValue(value) ? (
+                            formatDate(value as string)
                           ) : (
                             value || ""
                           )}
                         </td>
+
                       );
                     })}
 
@@ -523,11 +587,20 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
                     </div>
 
 
-                    {props.selectedColumnsCard?.map((colKey: string) => {
+                    {/* Determine card columns dynamically per tab */}
+                    {(
+                      activeTab === "עובדי קשת"
+                        ? props.selectedColumnsCardFirstTab
+                        : activeTab === "עובדי הפקות"
+                          ? props.selectedColumnsCardSecondTab
+                          : activeTab === "KI"
+                            ? props.selectedColumnsCardThirdTab
+                            : []
+                    )?.map((colKey: string) => {
                       const columnInfo = props.listColumns?.find(c => c.key === colKey);
                       const value = selectedEmployee[colKey];
 
-                      // Skip rendering if value is empty, null, undefined, or empty string
+                      // Skip rendering if empty
                       if (value === null || value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {
                         return null;
                       }
@@ -536,41 +609,33 @@ const KeshetNet: React.FC<IKeshnetPhonebookProps> = (props) => {
                         <>
                           {/* Skip rendering if SPsubDepartment has "*" */}
                           {!(colKey === "SPsubDepartment" && typeof value === "string" && value.includes("*")) && (
-                            <p
-                              key={colKey}
-                              className={styles.topModalTextContentField}
-                            >
+                            <p key={colKey} className={styles.topModalTextContentField}>
                               <span className={styles.label}>
                                 {columnInfo ? columnInfo.text : colKey}:
                               </span>{" "}
                               <strong
                                 className={`${styles.strongText} ${colKey === "Department" ? styles.highlight : ""}`}
                               >
-                                {colKey === "BirthDate" && value ? (
-                                  formatDate(value as string)
-                                ) : colKey === "SPmanager" && value ? (
-                                  getManagerName(value)
+                                {colKey === "SPmanager" && value ? (
+                                  value
                                 ) : colKey === "Email" && value ? (
                                   <a href={`mailto:${value}`}>{value}</a>
                                 ) : typeof value === "boolean" ? (
                                   value ? "כן" : "לא"
+                                ) : isValidDateValue(value) ? (
+                                  formatDate(value as string)
                                 ) : (
                                   value
-                                )}
+                                )
+                                }
                               </strong>
                             </p>
                           )}
                         </>
                       );
-
                     })}
-
                   </div>
 
-
-                  {/* <p>
-                    <span className={styles.label}>מנהל ישיר:</span>
-                  </p> */}
                   <div className={styles.layer1Wrapper}>
                     <img src={layerImg} className={styles.avatarFrame} alt="Layer" />
                   </div>

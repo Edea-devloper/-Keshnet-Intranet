@@ -13,7 +13,6 @@
 
 .birthdayWebPart_wrap {
   max-width: 100%;
-  // margin-top: 35px;
 }
 
 
@@ -21,7 +20,7 @@
   font-size: 40px;
   font-weight: normal;
   color: var(--dark);
-  font-family: "Alef", sans-serif;
+  font-family: "keshet-12" !important;
   margin-bottom: 14px;
   text-align: right;
 }
@@ -44,7 +43,6 @@
   width: 266px;
   height: 40px;
   font-family: 'Keshet-12';
-  // margin-right: 15px;
   display: flex;
   gap: 10px;
 }
@@ -126,13 +124,10 @@
   font-family: 'Keshet-12';
   width: 190px;
   height: 18px;
-
   white-space: nowrap;
-  /* force single line */
   overflow: hidden;
-  /* hide overflowing text */
   text-overflow: ellipsis;
-  /* show ... */
+
 }
 
 

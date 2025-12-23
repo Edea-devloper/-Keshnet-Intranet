@@ -16,6 +16,7 @@ const KeshnetGallery: React.FC<IKeshnetGalleryProps> = ({ _GalleryLists, context
   const [Employees, setEmployees] = React.useState([] as any);
   const [isOpen, setIsOpen] = React.useState(false); // Open/close modal
   const [currntItem, setCurrntItem] = React.useState({}); // Current card item for modal
+  const [isDataLoaded, setIsDataLoaded] = React.useState(false);
 
   // State to track scroll availability (RTL adjusted)
   const [canScrollPrev, setCanScrollPrev] = React.useState(false); // visually left
@@ -91,37 +92,41 @@ const KeshnetGallery: React.FC<IKeshnetGalleryProps> = ({ _GalleryLists, context
 
   }, []);
 
-  const fetchData = async (): Promise<void> => {
-    try {
-      const images: any = await getAllImages(ImageLibrary);
-      SetImages(images);
-      const data = await GetTemplateList(TemplateList);
-      settemplateItems(data)
-      const emp = await getEmployees(EmployeeList);
-      setEmployees(emp);
-      const items: any = await getSPListItemsById(_GalleryLists);
-
-      const sortedItems = items?.sort((a: any, b: any) => {
-        const orderA = a.order0 !== null && a.order0 !== undefined && a.order0 !== '' ? Number(a.order0) : Number.MAX_SAFE_INTEGER;
-        const orderB = b.order0 !== null && b.order0 !== undefined && b.order0 !== '' ? Number(b.order0) : Number.MAX_SAFE_INTEGER;
-
-        return orderA - orderB;
-      });
-      setGalleryItems(sortedItems);
-
-      setTimeout(checkScroll, 100); // Check after items load
-    } catch (error) {
-      console.error("Error fetching gallery items:", error);
-    }
-  };
 
   React.useEffect(() => {
-    fetchData().catch((error) => {
-      console.error("Error fetching gallery items:", error);
-    });
+    const loadData = async () => {
+      try {
+        const [img, data, emp, items]: [any, any, any, any] = await Promise.all([
+          getAllImages(ImageLibrary),
+          GetTemplateList(TemplateList),
+          getEmployees(EmployeeList),
+          getSPListItemsById(_GalleryLists),
+        ]);
+
+        const sortedItems = items?.sort((a: any, b: any) => {
+          const orderA = a.order0 !== null && a.order0 !== undefined && a.order0 !== '' ? Number(a.order0) : Number.MAX_SAFE_INTEGER;
+          const orderB = b.order0 !== null && b.order0 !== undefined && b.order0 !== '' ? Number(b.order0) : Number.MAX_SAFE_INTEGER;
+
+          return orderA - orderB;
+        });
+
+
+        SetImages(img);
+        settemplateItems(data);
+        setEmployees(emp);
+        setGalleryItems(sortedItems);
+
+        setIsDataLoaded(true);
+      } catch (err) {
+        console.error('Error loading gallery data', err);
+      } finally {
+        setTimeout(checkScroll, 100);
+      }
+    };
+
+    loadData();
   }, []);
 
-  // Function to check if we can scroll left/right in RTL
   const checkScroll = () => {
     const container = document.getElementById('carousel');
     if (container) {
@@ -144,22 +149,6 @@ const KeshnetGallery: React.FC<IKeshnetGalleryProps> = ({ _GalleryLists, context
     }
   }, [galleryItems]);
 
-  // React.useEffect(() => {
-  //   const container = document.getElementById('carousel');
-  //   if (container) {
-  //     const preventScroll = (e: Event) => {
-  //       e.preventDefault();
-  //     };
-
-  //     container.addEventListener('wheel', preventScroll, { passive: false });
-  //     container.addEventListener('touchmove', preventScroll, { passive: false });
-
-  //     return () => {
-  //       container.removeEventListener('wheel', preventScroll);
-  //       container.removeEventListener('touchmove', preventScroll);
-  //     };
-  //   }
-  // }, []);
 
   const OpenAndCloseCurrntCard = (isOpen: boolean, CurrntCardItem: any) => {
     setIsOpen(isOpen);
@@ -186,23 +175,19 @@ const KeshnetGallery: React.FC<IKeshnetGalleryProps> = ({ _GalleryLists, context
       <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
         <div style={{ width: '960px' }} className={styles.customGalleryContainer}>
           <div className={styles.main}>
-            <div className={`${styles.carouselWrapperContainer} ${styles.sectionTitle}`}>
-              מה קורה <span>בקשת</span>
-            </div>
+            {isDataLoaded && (
+              <div className={`${styles.carouselWrapperContainer} ${styles.sectionTitle}`}>
+                מה קורה <span>בקשת</span>
+              </div>
+            )}
+
 
             <div className={`${styles.carouselWrapperContainer} ${styles.carouselWrapper}`}>
 
-            {/* Next button (visually right in RTL) */}
-            {canScrollNext && (
-              // <button 
-              // style={{ paddingRight: '9px' }}
-              //   className={`${styles.carouselButton} ${styles.left}`}
-              //   onClick={() => scrollCarousel(1)}
-              // >
-              //   &#10095;
-              // </button>
-              <img src={NavigationLeft} alt="NavigationLeft" className={`${styles.carouselButton} ${styles.left}`} onClick={() => scrollCarousel(1)}/>
-            )}
+              {/* Next button (visually right in RTL) */}
+              {canScrollNext && (
+                <img src={NavigationLeft} alt="NavigationLeft" className={`${styles.carouselButton} ${styles.left}`} onClick={() => scrollCarousel(1)} />
+              )}
 
               <div className={styles.cardCarousel} id="carousel">
                 <div className={styles.cardGrid}>
@@ -216,20 +201,13 @@ const KeshnetGallery: React.FC<IKeshnetGalleryProps> = ({ _GalleryLists, context
                 </div>
               </div>
 
-            {/* Previous button (visually left in RTL) */}
-            {canScrollPrev && (
-              // <button 
-              // style={{ paddingLeft: '9px' }}
-              //   className={`${styles.carouselButton} ${styles.right}`}
-              //   onClick={() => scrollCarousel(-1)}
-              // >
-              //   &#10094;
-              // </button>.
-              <img src={NavigationRight} alt="NavigationRight" className={`${styles.carouselButton} ${styles.right}`} onClick={() => scrollCarousel(-1)}/>
-            )}
+              {/* Previous button (visually left in RTL) */}
+              {canScrollPrev && (
+                <img src={NavigationRight} alt="NavigationRight" className={`${styles.carouselButton} ${styles.right}`} onClick={() => scrollCarousel(-1)} />
+              )}
+            </div>
           </div>
         </div>
-      </div>
       </div>
 
       {/* Card Modal */}

@@ -50,7 +50,7 @@ export const getLatestQuickLink = async (selectedList: any): Promise<any> => {
             .expand("AttachmentFiles")
             .filter("Active eq 1")
             .orderBy("Modified", false)
-            .top(4)(); // ✅ Limit to 4 items
+            .top(4)(); // Limit to 4 items
 
         return items;
     } catch (error) {

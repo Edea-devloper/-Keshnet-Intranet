@@ -2,8 +2,6 @@ import * as React from 'react';
 import styles from './CardModal.module.scss';
 import staticImage from '../../assets/default.svg';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-
 export interface IUserModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -24,7 +22,6 @@ const CardModal: React.FC<IUserModalProps> = ({
 
     if (!isOpen) return null;
 
-    // Safe compare with ?? "" before toLowerCase/trim
     const matchedImage = Images.find((i: any) =>
         (i?.EmployeeName?.EMail ?? "").toLowerCase().trim() === (item?.Employee?.EMail ?? "").toLowerCase().trim()
     );
